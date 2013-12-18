@@ -8,6 +8,7 @@ class SubscriptionsController < ApplicationController
     respond_to do |format|
       if @subscription.save
         format.html { redirect_to project_path(@project.id), notice: 'You are now subscribed to this project.' }
+        Notifier.subscription_confirmation(current_user, @project).deliver
       else
         format.html { redirect_to project_path(@project.id), alert: 'Your subscription could not be processed.' }
       end
@@ -19,6 +20,7 @@ class SubscriptionsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to project_path(@project.id), notice: 'You are now unsubscribed from this project.' }
       format.json { head :no_content }
+      Notifier.unsubscribe_confirmation(current_user, @project).deliver
     end
   end
 
