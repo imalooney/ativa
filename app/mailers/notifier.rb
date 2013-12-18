@@ -25,4 +25,13 @@ class Notifier < ActionMailer::Base
       )    
   end
 
+  # Notify user when a new post is made to project they are subscribed to
+  def post_made(user, project)
+    @user = user
+    @project = project
+
+    mail( to: "#{}"
+      )    
+  end
+
 end
