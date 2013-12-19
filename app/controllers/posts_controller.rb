@@ -18,10 +18,11 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
+        @post.project.subscriptions.each do |sub|
+          Notifier.post_made(@post, sub.user).deliver
+        end
         format.html { redirect_to project_path(@post.project_id, phase_id: @post.phase_id), notice: 'Post was successfully created.' }
         format.json { render action: 'show', status: :created, location: @post }
-        # change current_user to subscribed user
-        Notifier.post_made(current_user, @project).deliver
       else
         format.html { render action: 'new' }
         format.json { render json: @post.errors, status: :unprocessable_entity }
